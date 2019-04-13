@@ -1,0 +1,207 @@
+{
+  "id": "McLighting.ledstrip",
+  "version": "1.0.0",
+  "compatibility": ">=1.5.0",
+  "sdk": 2,
+  "name": {
+    "en": "McLighting ledstrip"
+  },
+  "description": {
+    "en": "Adds support for McLighting ledstrip",
+    "nl": "Voegt ondersteuning toe voor een McLighting ledstrip"
+  },
+  "tags": {
+    "en": [ "McLighting", "Light", "ledstrip" ],
+    "nl": [ "McLighting", "Licht", "ledstrip" ]
+  },
+  "category": [
+    "lights"
+  ],
+  "permissions": [],
+  "images": {
+    "large": "/assets/images/large.png",
+    "small": "/assets/images/small.png"
+  },
+  "author": {
+    "name": "Rutger Stark",
+    "email": "develop.artist@gmail.com"
+  },
+  "contributing": {
+    "donate": {
+      "paypal": {
+          "username": "develop.artist@gmail.com"
+      }
+    }
+  },
+  "capabilities": {
+    "theme": {
+        "type": "enum",
+        "title": {
+            "en": "Theme selected",
+            "nl": "Thema geselecteerd"
+        },
+        "getable": true,
+        "setable": true,
+        "values": [
+          {	
+            "id": "0",
+            "title": { 
+              "en": "None"
+            }
+          },
+          {	
+            "id": "1",
+            "title": { 
+              "en": "Blink"
+            }
+          }, 
+          {	
+            "id": "2",
+            "title": { 
+              "en": "Breath"
+            }
+          }, 
+          {	
+            "id": "5",
+            "title": { 
+              "en": "Wipe reverse"
+            }
+          }, 
+          {	
+            "id": "7",
+            "title": { 
+              "en": "Color wipe random"
+            }
+          },
+          {	
+            "id": "8",
+            "title": { 
+              "en": "Random color"
+            }
+          }, 
+          {	
+            "id": "11",
+            "title": { 
+              "en": "Rainbow"
+            }
+          }, 
+          {	
+            "id": "12",
+            "title": { 
+              "en": "Rainbow cycle"
+            }
+          },
+          {	
+            "id": "17",
+            "title": { 
+              "en": "Theater chase rainbow"
+            }
+          },
+          {	
+            "id": "22",
+            "title": { 
+              "en": "Twinkle fade random"
+            }
+          },
+          {	
+            "id": "35",
+            "title": { 
+              "en": "Chase flash random"
+            }
+          },
+          {	
+            "id": "37",
+            "title": { 
+              "en": "Chase blackout"
+            }
+          }, 
+          {	
+            "id": "39",
+            "title": { 
+              "en": "Color sweep random"
+            }
+          }, 
+          {	
+            "id": "41",
+            "title": { 
+              "en": "Running red blue"
+            }
+          },
+          {	
+            "id": "45",
+            "title": { 
+              "en": "Fireworks"
+            }
+          }, 
+          {	
+            "id": "49",
+            "title": { 
+              "en": "Fire flicker"
+            }
+          } 
+        ]
+    },
+    "theme_speed": {
+      "type": "number",
+      "title": {
+        "en": "Theme speed",
+        "nl": "Thema snelheid"
+      },
+      "uiComponent": "slider",
+      "getable": true,
+      "setable": true,
+      "units": {
+        "en": "%"
+      },
+      "min": 0,
+      "max": 255,
+      "step": 1
+    }
+  },
+  "drivers": [
+    {
+      "images": {
+        "large": "/drivers/ledstrip/assets/images/large.png",
+        "small": "/drivers/ledstrip/assets/images/small.png"
+      },
+      "icon": "/drivers/ledstrip/assets/icon.svg",
+      "id": "ledstrip",
+      "name": {
+        "en": "Ledstrip"
+      },
+      "class": "light",
+      "capabilities": [
+        "onoff",
+        "dim",
+        "light_hue",
+        "light_saturation",
+        "theme_speed",
+        "theme"
+      ],
+      "settings": [
+        {
+          "type": "group",
+          "label": {
+            "en": "General settings",
+            "nl": "Algemene instellingen"
+          },
+          "children": [
+            {
+              "id": "ipAddress",
+              "type": "text",
+              "label": {
+                "en": "Host IP address"
+              },
+              "value": ""
+            }
+          ]
+        }
+      ],
+      "pair": [
+        {
+          "id": "pair_device"
+        }
+      ]
+    }
+  ]
+}

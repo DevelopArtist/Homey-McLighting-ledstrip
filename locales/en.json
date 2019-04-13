@@ -1,0 +1,14 @@
+{
+	"pair": {
+        "label": {
+            "name": "Name",
+            "ipAddress": "Host IP address",
+            "theme": "Theme"
+        },
+        "warning": {
+            "ip": "Please fill in a valid IP address!",
+            "name": "Please fill in a valid device name!"
+        },
+        "title": "General settings"
+    }
+}

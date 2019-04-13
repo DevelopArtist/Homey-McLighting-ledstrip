@@ -1,0 +1,55 @@
+<head>
+    <style>
+        .input label {
+            display: inline-block;
+            width: 160px;
+            text-align: left;
+        }
+    </style>
+</head>
+<fieldset>
+    <legend data-i18n="pair.title"></legend>
+    <form id="form">
+        <div class="input">
+            <label data-i18n="pair.label.name"></label>
+            <input class="control" type="string" id="name" required="required"  value="Ledstrip" placeholder="Ledstrip">
+        </div>
+        <div class="input">
+            <label data-i18n="pair.label.ipAddress"></label>
+            <input class="control" type="string" id="ip" required="required" placeholder="192.168.10.1">
+        </div>
+    </form>
+    <button class="btn btn-primary" style="margin-top: 20px;" id="finish" type="button">Finish</button>
+</fieldset>
+<script>
+    $("#finish").click(function () {
+        AddDevice();
+    });
+
+    function AddDevice() {
+        if ($("#ip").val() === "") {
+            Homey.alert(__('pair.warning.ip'));
+        } else if ($("#name").val() === "") {
+            Homey.alert(__('pair.warning.name'));
+        } else {
+            Homey.addDevice({
+                name: $("#name").val(),
+                settings: {
+                    'ipAddress': $("#ip").val(), 
+                },
+                data: { 
+                    id: $("#name").val()
+                },
+            }, function (err, result) {
+                if (err) return Homey.alert(err);
+                Homey.done();
+            });
+        }
+    }
+
+    Homey.on('close', function () {
+        Homey.close();
+    });
+</script>
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">

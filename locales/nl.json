@@ -1,0 +1,14 @@
+{
+	"pair": {
+        "label": {
+            "name": "Naam",
+            "ipAddress": "Host IP address",
+            "theme": "Thema"
+        },
+        "warning": {
+            "ip": "Vul een geldig IP address in!",
+            "name": "Vul een geldige naam voor het apparaat in!"
+        },
+        "title": "Algemene instellingen"
+    }
+}
