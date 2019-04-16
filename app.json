@@ -167,7 +167,7 @@
       "icon": "/drivers/ledstrip/assets/icon.svg",
       "id": "ledstrip",
       "name": {
-        "en": "Ledstrip"
+        "en": "WS2811/2812 ledstrip"
       },
       "class": "light",
       "capabilities": [
