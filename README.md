@@ -9,3 +9,4 @@ https://github.com/toblum/McLighting
 ##### v1.0.0
 - Athom App Store release.
 - Basic functionality with one-way communication. 
+- Added support for themes. 
