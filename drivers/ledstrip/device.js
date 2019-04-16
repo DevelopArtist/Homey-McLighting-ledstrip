@@ -15,7 +15,7 @@ class LedstripDevice extends Homey.Device {
         this.registerCapabilityListener('dim', this._onCapabilityDim.bind(this));
 
         // Initialize variables
-        this.setCapabilityValue('theme', "1");
+        this.setCapabilityValue('theme', "0");
         this.setCapabilityValue('theme_speed', 150);
         this.savedColor = {red: 0, green: 0, blue: 255};
     }
