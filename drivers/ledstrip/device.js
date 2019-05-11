@@ -21,20 +21,24 @@ class LedstripDevice extends Homey.Device {
     }
 
     _onCapabilityDim(dim) {
-        let url = 'http://' + this.getSettings().ipAddress + '/set_brightness?c=' + (dim * 100);
-        this._sendRequest(url);   
+        if (this._isLedStripOn()) {
+            let url = 'http://' + this.getSettings().ipAddress + '/set_brightness?c=' + (dim * 100);
+            this._sendRequest(url); 
+        }  
 
         return Promise.resolve();
     }
 
     _onCapabilityTheme(valueObj) {
-        if (typeof valueObj.theme !== 'undefined') {
-            var url = this._createModeUrl(valueObj.theme);
-        } else if (typeof valueObj.theme_speed !== 'undefined') {
-            var url = 'http://' + this.getSettings().ipAddress + '/set_speed?d=' + valueObj.theme_speed; 
-        }
+        if (this._isLedStripOn()) {
+            if (typeof valueObj.theme !== 'undefined') {
+                var url = this._createModeUrl(valueObj.theme);
+            } else if (typeof valueObj.theme_speed !== 'undefined') {
+                var url = 'http://' + this.getSettings().ipAddress + '/set_speed?d=' + valueObj.theme_speed; 
+            }
 
-        this._sendRequest(url);
+            this._sendRequest(url);
+        }
 
         return Promise.resolve();
     }
@@ -117,11 +121,11 @@ class LedstripDevice extends Homey.Device {
 
     _createModeUrl(newMode) {
         let url = 'http://' + this.getSettings().ipAddress + '/set_mode?m=' + 
-            newMode                        + '&r=' + 
-            this.savedColor.red            + '&g=' + 
-            this.savedColor.green          + '&b=' + 
-            this.savedColor.blue           + '&c=' +
-            this.getCapabilityValue('dim') + '&s=' + 
+            newMode                                + '&r=' + 
+            this.savedColor.red                    + '&g=' + 
+            this.savedColor.green                  + '&b=' + 
+            this.savedColor.blue                   + '&c=' +
+            (this.getCapabilityValue('dim') * 100) + '&s=' + 
             this.getCapabilityValue('theme_speed');        
 
         return url;
@@ -132,7 +136,8 @@ class LedstripDevice extends Homey.Device {
             rgb.red   + '&g=' + 
             rgb.green + '&b=' + 
             rgb.blue  + '&d=' + 
-            this.getCapabilityValue('theme_speed');                                  
+            this.getCapabilityValue('theme_speed');  
+
         return url;                                           
     }
 }
