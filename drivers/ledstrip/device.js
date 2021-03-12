@@ -15,8 +15,8 @@ class LedstripDevice extends Homey.Device {
         this.registerCapabilityListener('dim', this._onCapabilityDim.bind(this));
 
         // Initialize variables
-        this.setCapabilityValue('animation', '0');
-        this.setCapabilityValue('animation_speed', 150);
+        this.setCapabilityValue('animation', '0').catch(this.error);
+        this.setCapabilityValue('animation_speed', 150).catch(this.error);
         this.savedColor = {red: 0, green: 0, blue: 255};
 
         // Initialize service
@@ -24,18 +24,17 @@ class LedstripDevice extends Homey.Device {
             return this.getSettings().ipAddress;
         }).bind(this);
 
-        this.service = new Service.ESP8266Service(boundFunction);
+        this.service = new Service.ESP8266Service(getIpAddressCallback);
     }
 
     async activateAnimation(animation) {
         try {
             if (!this._isLedStripOn()) {
-                this.setCapabilityValue('onoff', '1');
-                this.service.turnOn(this.savedColor, this.getCapabilityValue('animation_speed'));
+                this.setCapabilityValue('onoff', true).catch(this.error);
             }
 
             this._setAnimation(animation);
-            this.setCapabilityValue('animation', animation);
+            this.setCapabilityValue('animation', animation).catch(this.error);
 
         } catch (error) {
             this.log('setAnimation', error);
@@ -99,7 +98,7 @@ class LedstripDevice extends Homey.Device {
     }
 
     _onCapabilityOnoff(onoff) {
-        if (onoff == '1') {
+        if (onoff == true) {
             if (this._isAnimationActive()) {
                 this._setAnimation(this.getCapabilityValue('animation'));
             } else {
@@ -120,7 +119,7 @@ class LedstripDevice extends Homey.Device {
     }
 
     _updateAnimationCapability(status) {
-        this.setCapabilityValue('animation', status);
+        this.setCapabilityValue('animation', status).catch(this.error);
     }
 
     _isAnimationActive() {
