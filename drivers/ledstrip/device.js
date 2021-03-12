@@ -3,41 +3,60 @@
 const Homey = require('homey');
 const request = require('axios');
 const colorConverter = require ('../../lib/ColorConverter.js');
-
+const Service = require ('../../service/ESP8266Service.js');
 
 class LedstripDevice extends Homey.Device {
 
     onInit() {
         // register all capability listener
         this.registerMultipleCapabilityListener([ 'light_hue', 'light_saturation' ], this._onCapabilityHueSaturation.bind(this), 500);
-        this.registerMultipleCapabilityListener([ 'theme', 'theme_speed' ], this._onCapabilityTheme.bind(this), 500);
+        this.registerMultipleCapabilityListener([ 'animation', 'animation_speed' ], this._onCapabilityAnimation.bind(this), 500);
         this.registerCapabilityListener('onoff', this._onCapabilityOnoff.bind(this));
         this.registerCapabilityListener('dim', this._onCapabilityDim.bind(this));
 
         // Initialize variables
-        this.setCapabilityValue('theme', "0");
-        this.setCapabilityValue('theme_speed', 150);
+        this.setCapabilityValue('animation', '0');
+        this.setCapabilityValue('animation_speed', 150);
         this.savedColor = {red: 0, green: 0, blue: 255};
+
+        // Initialize service
+        var getIpAddressCallback = (function() { 
+            return this.getSettings().ipAddress;
+        }).bind(this);
+
+        this.service = new Service.ESP8266Service(boundFunction);
+    }
+
+    async activateAnimation(animation) {
+        try {
+            if (!this._isLedStripOn()) {
+                this.setCapabilityValue('onoff', '1');
+                this.service.turnOn(this.savedColor, this.getCapabilityValue('animation_speed'));
+            }
+
+            this._setAnimation(animation);
+            this.setCapabilityValue('animation', animation);
+
+        } catch (error) {
+            this.log('setAnimation', error);
+        }
     }
 
     _onCapabilityDim(dim) {
         if (this._isLedStripOn()) {
-            let url = 'http://' + this.getSettings().ipAddress + '/set_brightness?c=' + (dim * 100);
-            this._sendRequest(url); 
+            this.service.dim(dim*100);
         }  
 
         return Promise.resolve();
     }
 
-    _onCapabilityTheme(valueObj) {
+    _onCapabilityAnimation(valueObj) {
         if (this._isLedStripOn()) {
-            if (typeof valueObj.theme !== 'undefined') {
-                var url = this._createModeUrl(valueObj.theme);
-            } else if (typeof valueObj.theme_speed !== 'undefined') {
-                var url = 'http://' + this.getSettings().ipAddress + '/set_speed?d=' + valueObj.theme_speed; 
+            if (typeof valueObj.animation !== 'undefined') {
+                this._setAnimation(valueObj.animation);
+            } else if (typeof valueObj.animation_speed !== 'undefined') {
+                this.service.setAnimationSpeed(valueObj.animation_speed); 
             }
-
-            this._sendRequest(url);
         }
 
         return Promise.resolve();
@@ -69,13 +88,11 @@ class LedstripDevice extends Homey.Device {
         this.savedColor.blue  = Math.ceil(rgb.blue); 
 
         if (this._isLedStripOn()) {
-            if (this._isThemeActive()) {
-                var url = this._createModeUrl(this.getCapabilityValue('theme'));
+            if (this._isAnimationActive()) {
+                this._setAnimation(this.getCapabilityValue('animation'));
             } else {
-                var url = this._createRgbUrl(this.savedColor);
+                this.service.setRgb(this.savedColor);
             }
-
-            this._sendRequest(url);
         }
         
         return Promise.resolve();
@@ -83,62 +100,35 @@ class LedstripDevice extends Homey.Device {
 
     _onCapabilityOnoff(onoff) {
         if (onoff == '1') {
-            if (this._isThemeActive()) {
-                let url = this._createModeUrl(this.getCapabilityValue('theme'));
-                this._sendRequest(url);
+            if (this._isAnimationActive()) {
+                this._setAnimation(this.getCapabilityValue('animation'));
             } else {
-                this._turnOn();
+                this.service.turnOn(this.savedColor);
             }
         } else {
-            this._turnOff();
+            this.service.turnOff();
         }
 
         return Promise.resolve();
     }
 
-    _turnOff() {
-        this._sendRequest('http://' + this.getSettings().ipAddress + '/off');
+    _setAnimation(animation) {
+        this.service.setAnimation(animation,    
+                                  this.savedColor, 
+                                 (this.getCapabilityValue('dim') * 100), 
+                                  this.getCapabilityValue('animation_speed'));     
     }
 
-    _turnOn() {
-        let url = this._createRgbUrl(this.savedColor);
-        this._sendRequest(url);
+    _updateAnimationCapability(status) {
+        this.setCapabilityValue('animation', status);
     }
 
-    _sendRequest(url) {
-        request.get(url).catch(error => {
-            // TODO: add alert/error handling.
-        });      
-    }
-
-    _isThemeActive() {
-        return this.getCapabilityValue('theme') != '0';
+    _isAnimationActive() {
+        return this.getCapabilityValue('animation') != '0';
     }
 
     _isLedStripOn() {
         return this.getCapabilityValue('onoff') == '1';
-    }
-
-    _createModeUrl(newMode) {
-        let url = 'http://' + this.getSettings().ipAddress + '/set_mode?m=' + 
-            newMode                                + '&r=' + 
-            this.savedColor.red                    + '&g=' + 
-            this.savedColor.green                  + '&b=' + 
-            this.savedColor.blue                   + '&c=' +
-            (this.getCapabilityValue('dim') * 100) + '&s=' + 
-            this.getCapabilityValue('theme_speed');        
-
-        return url;
-    }
-
-    _createRgbUrl(rgb) {
-        let url = 'http://' + this.getSettings().ipAddress + '/all?r=' + 
-            rgb.red   + '&g=' + 
-            rgb.green + '&b=' + 
-            rgb.blue  + '&d=' + 
-            this.getCapabilityValue('theme_speed');  
-
-        return url;                                           
     }
 }
 

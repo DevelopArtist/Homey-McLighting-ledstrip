@@ -3,7 +3,7 @@
         "label": {
             "name": "Naam",
             "ipAddress": "Host IP address",
-            "theme": "Thema"
+            "animation": "Animatie"
         },
         "warning": {
             "ip": "Vul een geldig IP address in!",

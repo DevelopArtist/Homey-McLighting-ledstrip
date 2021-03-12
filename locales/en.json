@@ -3,7 +3,7 @@
         "label": {
             "name": "Name",
             "ipAddress": "Host IP address",
-            "theme": "Theme"
+            "animation": "Animation"
         },
         "warning": {
             "ip": "Please fill in a valid IP address!",
