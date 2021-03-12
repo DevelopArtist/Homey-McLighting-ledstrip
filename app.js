@@ -4,8 +4,19 @@ const Homey = require('homey');
 
 class Lighting extends Homey.App {
 	
-	onInit() {
-		this.log('Running...');
+	async onInit() {
+		try {
+			await this._initFlows();
+			this.log('Running...');
+		} catch (err) {
+			this.log('onInit error', err);
+		}
+	}
+
+	async _initFlows() {
+		new Homey.FlowCardAction('activate_animation')
+				.register()
+				.registerRunListener((args, state) => args.device.activateAnimation(args.animation));
 	}
 	
 }
