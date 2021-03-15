@@ -7,8 +7,8 @@ https://github.com/toblum/McLighting
 # Changelog
 
 ##### v1.2.0
-- Renamed theme to animation.
 - Added animation action flow card.
+- Renamed theme to animation.
 
 ##### v1.1.0
 - Fixed theme brightness bug.

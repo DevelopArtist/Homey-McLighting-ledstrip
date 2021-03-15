@@ -1,0 +1,11 @@
+{
+    "1.2.0": {
+      "en": "Added animation action flow card. Renamed theme to animation."
+    },
+    "1.1.0": {
+      "en": "Fixed theme brightness bug. Fixed ON/OFF bug."
+    },
+    "1.0.0": {
+      "en": "Athom App Store release. Basic functionality with one-way communication. Added support for themes."
+    }
+  }
